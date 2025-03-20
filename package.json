@@ -3,10 +3,15 @@
   "description": "Progetto con l'obiettivo di sviluppare un GDR con node/koa",
   "version": "1.0.0",
   "license": "LGPL-2.1-only",
+  "type": "module",
   "dependencies": {
+    "@koa/router": "^13.1.0",
+    "dotenv": "^16.4.7",
     "koa": "^2.16.0"
   },
   "devDependencies": {
-    "eslint": "^9.22.0"
+    "eslint": "^9.22.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3"
   }
 }
