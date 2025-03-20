@@ -6,8 +6,6 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "ts-node index.ts",
-    "build": "tsc",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
