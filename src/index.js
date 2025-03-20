@@ -6,7 +6,7 @@ const app = new Koa();
 const router = new Router();
 
 router.get('/', (ctx, next) => {
-  ctx.body = 'AST, Non ce ne frega un cazzo dei sigilli!';
+  ctx.body = 'Welcome!';
 });
 
 app.use(router.routes()).use(router.allowedMethods());
