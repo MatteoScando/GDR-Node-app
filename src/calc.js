@@ -1,3 +1,5 @@
-export const add = (var1, var2) => {
-    return var1+var2;
-}
+const add = (a, b) => {
+  return a + b;
+};
+
+export default add;
