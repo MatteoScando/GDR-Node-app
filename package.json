@@ -1,0 +1,12 @@
+{
+  "name": "gdr-node",
+  "description": "Progetto con l'obiettivo di sviluppare un GDR con node/koa",
+  "version": "0.1.0",
+  "license": "LGPL-2.1-only",
+  "dependencies": {
+    "koa": "^2.16.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0"
+  }
+}
