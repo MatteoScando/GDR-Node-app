@@ -1,10 +1,12 @@
+import { defineConfig } from "eslint/config";
 import globals from "globals";
-import pluginJs from "@eslint/js";
-// import tseslint from "typescript-eslint";
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 
-export default [
+
+export default defineConfig([
   { files: ["**/*.{js,mjs,cjs,ts}"] },
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  // ...tseslint.configs.recommended,
-];
+  { files: ["**/*.{js,mjs,cjs,ts}"], languageOptions: { globals: globals.browser } },
+  { files: ["**/*.{js,mjs,cjs,ts}"], plugins: { js }, extends: ["js/recommended"] },
+  tseslint.configs.recommended,
+]);
