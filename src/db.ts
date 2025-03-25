@@ -1,9 +1,8 @@
-import { Pool } from "pg";
+import pkg from "pg";
+const { Pool } = pkg;
 
 import dotenv from "dotenv";
 dotenv.config();
-
-console.log(process.env.DATABASE_HOST);
 
 const pool = new Pool({
   host: process.env.DATABASE_HOST,
@@ -21,4 +20,4 @@ pool.on("error", (err) => {
   console.error("🔴 Errore nella connessione al database!", err);
 });
 
-export const query = (text: string, params: any) => pool.query(text, params);
+export const query = (text: string, params?: any) => pool.query(text, params);

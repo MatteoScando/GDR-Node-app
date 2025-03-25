@@ -18,4 +18,4 @@ router.get("/", (ctx) => {
 
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.APP_PORT || 3000);
