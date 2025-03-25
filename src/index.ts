@@ -11,6 +11,7 @@ const prisma = new PrismaClient();
 
 router.get("/", (ctx) => {
   // const character = {
+  //test
     
   // }
   ctx.body = "add(1, 2)";
