@@ -4,17 +4,23 @@ services:
     build:
       dockerfile: Dockerfile
     restart: unless-stopped
-    #environment:
+    environment:
+      - CHOKIDAR_USEPOLLING=1
     ports:
       - "3000:3000"
-    #network:
+    networks:
+      - corso-its-net
     volumes:
       - .:/app
+    depends_on:
+      corso_its_db:
+        condition: service_healthy
+
   corso_its_db:
     container_name: corso_its_db
     platform: linux/amd64
     restart: unless-stopped
-    image: postgres:17.2
+    image: postgres:17.2-alpine
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -23,8 +29,16 @@ services:
       - corso-its-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    # networks:
+    networks:
+      - corso-its-net
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${DATABASE_DB}"]
       interval: 5s
       retries: 5
+
+volumes:
+  corso-its-data:
+
+networks:
+  corso-its-net:
+    driver: bridge

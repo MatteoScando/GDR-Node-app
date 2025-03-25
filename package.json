@@ -5,6 +5,8 @@
   "license": "LGPL-2.1-only",
   "type": "module",
   "scripts": {
+    "dev:docker": "docker-compose -f docker-compose.yml up",
+    "dev:docker:build": "docker-compose -f docker-compose.yml up --build",
     "dev": "nodemon src/index.js",
     "lint": "eslint ./src"
   },
