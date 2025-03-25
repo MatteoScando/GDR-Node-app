@@ -9,11 +9,13 @@ const app = new Koa();
 const router = new Router();
 const prisma = new PrismaClient();
 
-router.get("/", (ctx) => {
-  // const character = {
-  //test
-    
-  // }
+router.get("/", async(ctx) => {
+  const character = await prisma.character.create({
+    data:{
+      name: "Matteo",
+      age: 22,
+    }
+  });
   ctx.body = "add(1, 2)";
 });
 
