@@ -1,0 +1,30 @@
+services:
+  corso_its_be:
+    container_name: corso_its_be
+    build:
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    #environment:
+    ports:
+      - "3000:3000"
+    #network:
+    volumes:
+      - .:/app
+  corso_its_db:
+    container_name: corso_its_db
+    platform: linux/amd64
+    restart: unless-stopped
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - corso-its-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    # networks:
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DATABASE_DB}"]
+      interval: 5s
+      retries: 5
