@@ -7,7 +7,7 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=1
     ports:
-      - "3000:3000"
+      - 3000:3000
     networks:
       - corso-its-net
     volumes:
@@ -22,17 +22,17 @@ services:
     restart: unless-stopped
     image: postgres:17.2-alpine
     environment:
-      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
-      - corso-its-data:/var/lib/postgresql/data
+      - corso-its-data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     networks:
       - corso-its-net
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DATABASE_DB}"]
+      test: ["CMD", "pg_isready", "-U", "corso_its_db"]
       interval: 5s
       retries: 5
 
@@ -41,4 +41,4 @@ volumes:
 
 networks:
   corso-its-net:
-    driver: bridge
+    name: corso-its-net

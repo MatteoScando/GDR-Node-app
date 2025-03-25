@@ -1,14 +1,18 @@
 import Koa from "koa";
 import Router from "@koa/router";
-import { config } from "dotenv";
+import dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client"
 
-// Init "dotenv"
-config();
+dotenv.config();
 
 const app = new Koa();
 const router = new Router();
+const prisma = new PrismaClient();
 
 router.get("/", (ctx) => {
+  // const character = {
+    
+  // }
   ctx.body = "add(1, 2)";
 });
 
