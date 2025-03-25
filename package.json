@@ -5,10 +5,12 @@
   "license": "LGPL-2.1-only",
   "type": "module",
   "scripts": {
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate:dev": "npx prisma migrate dev",
     "dev:docker": "docker-compose -f docker-compose.yml up",
     "dev:docker:build": "docker-compose -f docker-compose.yml up --build",
     "dev:docker:down": "docker-compose -f docker-compose.yml down -v",
-    "dev": "npx tsx watch src/index.ts",
+    "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx tsx watch src/index.ts",
     "lint": "eslint ./src"
   },
   "dependencies": {
