@@ -1,5 +1,5 @@
 import { Context, Next } from "koa";
-import prisma from "../../prisma/client.ts";
+import prisma from "../../prisma/client";
 
 export const raceExists = async (ctx: Context, next: Next) => {
   const id = ctx.params.id;
