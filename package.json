@@ -8,7 +8,7 @@
     "prisma:generate": "npx prisma generate",
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:dev": "npm run prisma:migrate:dev && npm run prisma:generate",
-    "prisma:docker:migrate": "docker-compose -f docker-compose.yml up --build corso_its_db && npm run prisma:generate && npm run prisma:migrate:dev --name latest && docker-compose -f docker-compose.yml down -v",
+    "prisma:docker:migrate": "docker compose -f 'docker-compose.yml' up -d --build 'corso_its_db' && npm run prisma:generate && npm run prisma:migrate:dev --name latest && docker-compose -f docker-compose.yml down -v",
     "db": "npx prisma studio",
     "dev:docker": "docker-compose -f docker-compose.yml up",
     "dev:docker:build": "docker-compose -f docker-compose.yml up --build",
