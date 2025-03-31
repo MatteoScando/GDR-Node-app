@@ -12,7 +12,8 @@
     "dev:docker": "docker-compose -f docker-compose.yml up",
     "dev:docker:build": "docker-compose -f docker-compose.yml up --build",
     "dev:docker:down": "docker-compose -f docker-compose.yml down -v",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx tsx watch src/index.ts"
   },
   "dependencies": {
     "@koa/router": "^13.1.0",
