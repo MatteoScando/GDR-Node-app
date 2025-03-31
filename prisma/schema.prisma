@@ -12,9 +12,9 @@ model Character {
   name    String  @db.VarChar(20)
   history String?
   age     Int?
-  health  Int?
-  stamina Int?
-  mana    Int?
+  health  Int?    @default(100)
+  stamina Int?    @default(100)
+  mana    Int?    @default(100)
   idRace  String
   idClass String
   race    Race    @relation(fields: [idRace], references: [id], onDelete: Cascade)
@@ -46,7 +46,7 @@ model Attribute {
   id          String        @id @default(uuid())
   key         String        @db.VarChar(20)
   name        String        @db.VarChar(20)
-  value       Int?
+  value       Int?          @default(20)
   raceAttrMod RaceAttrMod[]
 }
 
@@ -73,7 +73,7 @@ model Skill {
   id    String @id @default(uuid())
   name  String @db.VarChar(20)
   key   String @db.VarChar(20)
-  value Int?
+  value Int?   @default(10)
 
   classSkillMod ClassSkillMod[]
 }

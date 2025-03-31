@@ -7,6 +7,6 @@ export const characterSchema = z.object({
   health: z.number().int().optional(),
   stamina: z.number().int().optional(),
   mana: z.number().int().optional(),
-  idClass: z.string(),
-  idRace: z.string(),
+  idClass: z.string().uuid(),
+  idRace: z.string().uuid(),
 });
