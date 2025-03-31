@@ -15,6 +15,21 @@ model Character {
   health  Int?
   stamina Int?
   mana    Int?
+  idRace  String
+  idClass String
+  race    Race    @relation(fields: [idRace], references: [id], onDelete: Cascade)
+  class   Class   @relation(fields: [idClass], references: [id], onDelete: Cascade)
+}
+
+model Race {
+  id          String        @id @default(uuid())
+  key         String        @db.VarChar(20)
+  name        String        @db.VarChar(20)
+  modHealth   Int
+  modStamina  Int
+  modMana     Int
+  character   Character[]
+  raceAttrMod RaceAttrMod[]
 }
 
 model RaceAttrMod {
@@ -27,22 +42,21 @@ model RaceAttrMod {
   @@id([idRace, idAttribute])
 }
 
-model Skill {
-  id    String @id @default(uuid())
-  name  String @db.VarChar(20)
-  key   String @db.VarChar(20)
-  value Int?
-
-  classes ClassSkillMod[]
+model Attribute {
+  id          String        @id @default(uuid())
+  key         String        @db.VarChar(20)
+  name        String        @db.VarChar(20)
+  value       Int?
+  raceAttrMod RaceAttrMod[]
 }
 
 model Class {
-  id          String  @id @default(uuid())
-  name        String  @db.VarChar(20)
-  key         String  @db.VarChar(20)
-  description String?
-
-  skills ClassSkillMod[]
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(20)
+  key           String          @db.VarChar(20)
+  description   String?
+  character     Character[]
+  classSkillMod ClassSkillMod[]
 }
 
 model ClassSkillMod {
@@ -55,20 +69,11 @@ model ClassSkillMod {
   @@id([idSkill, idClass])
 }
 
-model Attribute {
-  id          String        @id @default(uuid())
-  key         String        @db.VarChar(20)
-  name        String        @db.VarChar(20)
-  value       Int?
-  RaceAttrMod RaceAttrMod[]
-}
+model Skill {
+  id    String @id @default(uuid())
+  name  String @db.VarChar(20)
+  key   String @db.VarChar(20)
+  value Int?
 
-model Race {
-  id          String        @id @default(uuid())
-  key         String        @db.VarChar(20)
-  name        String        @db.VarChar(20)
-  modHealth   Int
-  modStamina  Int
-  modMana     Int
-  RaceAttrMod RaceAttrMod[]
+  classSkillMod ClassSkillMod[]
 }

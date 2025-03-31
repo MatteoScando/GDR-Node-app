@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "Node18",
+    "module": "ESNext",
     "strict": true,
     "esModuleInterop": true,
-    "moduleResolution": "NodeNext",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": false,
     "noEmit": true,
     "forceConsistentCasingInFileNames": true
   },

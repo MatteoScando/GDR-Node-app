@@ -1,10 +1,10 @@
 import Router from "@koa/router";
-import prisma from "../../prisma/client.ts";
+import prisma from "../../prisma/client";
 import { Character } from "@prisma/client";
-import { characterExists } from "../middlewares/middlewareCharacter.ts";
-import { characterSchema } from "../../prisma/validation/validationCharacter.ts";
+import { characterExists } from "../middlewares/middlewareCharacter";
+import { characterSchema } from "../../prisma/validation/validationCharacter";
+import { validationError } from "../utilities/errorsHandler";
 import { ZodError } from "zod";
-import { validationError } from "../utilities/errorsHandler.ts";
 
 const router = new Router({
   prefix: "/character",
@@ -37,6 +37,8 @@ router.post("/", async (ctx) => {
           health: data.health,
           stamina: data.stamina,
           mana: data.mana,
+          idClass: data.idClass,
+          idRace: data.idRace,
         },
       });
 
