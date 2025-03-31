@@ -1,5 +1,5 @@
-import z from "zod"
+import z from "zod";
 
 export const RaceAttrModSchema = z.object({
-    value: z.number().int()
-})
+  value: z.number().int(),
+});

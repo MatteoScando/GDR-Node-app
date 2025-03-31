@@ -5,9 +5,7 @@ import { classSkillModSchema } from "../../prisma/validation/validationClassSkil
 import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 
-const router = new Router({
-  prefix: "/classSkill",
-});
+const router = new Router();
 
 // GET /: retrive all class and skill 
 router.get("/class/skill/mod", async (ctx) => {
@@ -21,25 +19,26 @@ router.get("/class/skill/mod", async (ctx) => {
   }
 });
 
-// POST /: create a character
+// POST /: create a modificator for class/skill
 router.post("/class/:idClass/skill/:idSkill", async (ctx) => {
   try {
     ctx.request.body = classSkillModSchema.parse(ctx.request.body);
     const data = ctx.request.body as ClassSkillMod;
 
-    const idClass = ctx.params.idClass
-    const idSkill = ctx.params.idSkill
+    const idClass = ctx.params.idClass;
+    const idSkill = ctx.params.idSkill;
 
-    if(!idClass || !idSkill){
+    if (!idClass || !idSkill) {
       ctx.status = 400;
-      
+      ctx.body = "Error: idClass and idSkill are required";
+      return;
     }
 
     try {
       const classSkillPivot = await prisma.classSkillMod.create({
         data: {
-          idSkill: data.idSkill,
-          idClass: data.idClass,
+          idSkill: idSkill,
+          idClass: idClass,
           value: data.value,
         },
       });
