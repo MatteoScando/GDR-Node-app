@@ -16,3 +16,58 @@ model Character {
   stamina Int?
   mana    Int?
 }
+
+model RaceAttrMod {
+  race    Race @relation(fields: [idRace], references: [id])
+  idRace  String
+  attribute Attribute @relation(fields: [idAttribute], references: [id])
+  idAttribute String
+  value   Int 
+
+  @@id([idRace, idAttribute])
+}
+
+model Skill {
+  id      String  @id @default(uuid())
+  name    String  @db.VarChar(20)
+  key    String  @db.VarChar(20)
+  value   Int?
+  
+  classes ClassSkillMod[]
+}
+
+
+model Class {
+  id      String  @id @default(uuid())
+  name    String  @db.VarChar(20)
+  key     String  @db.VarChar(20)
+  description String?
+  
+  skills ClassSkillMod[]
+}
+
+model ClassSkillMod {
+  skill   Skill  @relation(fields: [idSkill], references: [id])
+  idSkill String 
+  class   Class  @relation(fields: [idClass], references: [id])
+  idClass String 
+  value   Int
+  
+  @@id([idSkill, idClass])
+}
+
+model Attribute{
+  id         String  @id @default(uuid())
+  key        String  @db.VarChar(20)
+  name       String  @db.VarChar(20)
+  value      Int?
+}
+
+model Race {
+  id String @id @default(uuid())
+  key String @db.VarChar(20)
+  name String @db.VarChar(20)
+  modHealth Int
+  modStamina Int
+  modMana Int
+}

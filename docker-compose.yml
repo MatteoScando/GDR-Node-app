@@ -2,6 +2,7 @@ services:
   corso_its_be:
     container_name: corso_its_be
     build:
+      context: .
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
