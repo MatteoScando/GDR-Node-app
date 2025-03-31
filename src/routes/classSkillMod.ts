@@ -9,8 +9,8 @@ const router = new Router({
   prefix: "/classSkill",
 });
 
-// GET /: retrive all characters
-router.get("/", async (ctx) => {
+// GET /: retrive all class and skill 
+router.get("/class/skill/mod", async (ctx) => {
   try {
     const data = await prisma.classSkillMod.findMany();
     ctx.status = 201;
@@ -22,10 +22,18 @@ router.get("/", async (ctx) => {
 });
 
 // POST /: create a character
-router.post("/", async (ctx) => {
+router.post("/class/:idClass/skill/:idSkill", async (ctx) => {
   try {
     ctx.request.body = classSkillModSchema.parse(ctx.request.body);
     const data = ctx.request.body as ClassSkillMod;
+
+    const idClass = ctx.params.idClass
+    const idSkill = ctx.params.idSkill
+
+    if(!idClass || !idSkill){
+      ctx.status = 400;
+      
+    }
 
     try {
       const classSkillPivot = await prisma.classSkillMod.create({
@@ -38,7 +46,8 @@ router.post("/", async (ctx) => {
 
       ctx.status = 201;
       ctx.body =
-        "Pivot table of Class and Skill created: Class -> " +
+        "Pivot table of Class and Skill created: " +
+        "Class -> " +
         classSkillPivot.idClass +
         " Skill -> " +
         classSkillPivot.idSkill;
