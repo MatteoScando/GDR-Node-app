@@ -5,13 +5,14 @@ import { raceSchema } from "../../prisma/validation/validationRace";
 import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { raceExists } from "../middlewares/middlewareRace";
+import { authUser } from "../middlewares/middlewareAuth";
 
 const router = new Router({
   prefix: "/race",
 });
 
 // GET /: retrive all race
-router.get("/", async (ctx) => {
+router.get("/", authUser, async (ctx) => {
   try {
     const races = await prisma.race.findMany();
     ctx.status = 201;
@@ -23,7 +24,7 @@ router.get("/", async (ctx) => {
 });
 
 // POST /: create a race
-router.post("/", async (ctx) => {
+router.post("/", authUser, async (ctx) => {
   try {
     ctx.request.body = raceSchema.parse(ctx.request.body);
     const data = ctx.request.body as Race;
@@ -56,7 +57,7 @@ router.post("/", async (ctx) => {
 });
 
 // GET /:id: get single race
-router.get("/:id", async (ctx) => {
+router.get("/:id", authUser, async (ctx) => {
   const id = ctx.params.id;
 
   try {
@@ -81,7 +82,7 @@ router.get("/:id", async (ctx) => {
 });
 
 // PATCH /:id: update single race
-router.patch("/:id", raceExists, async (ctx) => {
+router.patch("/:id", authUser, raceExists, async (ctx) => {
   const id = ctx.params.id;
   const data = ctx.request.body as Race;
 
@@ -108,7 +109,7 @@ router.patch("/:id", raceExists, async (ctx) => {
 });
 
 // DELETE /:id: delete single race
-router.delete("/:id", raceExists, async (ctx) => {
+router.delete("/:id", authUser, raceExists, async (ctx) => {
   const id = ctx.params.id;
 
   try {

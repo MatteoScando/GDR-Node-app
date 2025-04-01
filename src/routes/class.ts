@@ -5,13 +5,14 @@ import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { classSchema } from "../../prisma/validation/validationClass";
 import { classExists } from "../middlewares/middlewareClass";
+import { authUser } from "../middlewares/middlewareAuth";
 
 const router = new Router({
   prefix: "/class",
 });
 
 // GET /: retrieve all classes
-router.get("/", async (ctx) => {
+router.get("/", authUser, async (ctx) => {
   try {
     const classes = await prisma.class.findMany();
     ctx.status = 201;
@@ -23,7 +24,7 @@ router.get("/", async (ctx) => {
 });
 
 // POST /: create a class
-router.post("/", async (ctx) => {
+router.post("/", authUser, async (ctx) => {
   try {
     ctx.request.body = classSchema.parse(ctx.request.body);
     const data = ctx.request.body as Class;
@@ -54,7 +55,7 @@ router.post("/", async (ctx) => {
 });
 
 // GET /:id: get single class
-router.get("/:id", async (ctx) => {
+router.get("/:id", authUser, async (ctx) => {
   const id = ctx.params.id;
 
   try {
@@ -79,7 +80,7 @@ router.get("/:id", async (ctx) => {
 });
 
 // PATCH /:id: update single class
-router.patch("/:id", classExists, async (ctx) => {
+router.patch("/:id", authUser, classExists, async (ctx) => {
   const id = ctx.params.id;
   const data = ctx.request.body as Class;
 
@@ -104,7 +105,7 @@ router.patch("/:id", classExists, async (ctx) => {
 });
 
 // DELETE /:id: delete single class
-router.delete("/:id", classExists, async (ctx) => {
+router.delete("/:id", authUser, classExists, async (ctx) => {
   const id = ctx.params.id;
 
   try {

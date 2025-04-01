@@ -1,0 +1,32 @@
+import { Context, Next } from "koa";
+import { COOKIE_SESSION_NAME } from "../consts";
+import prisma from "../../prisma/client";
+
+// Middleware to check if the user is authenticated
+export const authUser = async (ctx: Context, next: Next) => {
+  const sessionId = ctx.cookies.get(COOKIE_SESSION_NAME);
+
+  if (!sessionId) {
+    ctx.status = 401;
+    ctx.body = { error: "Unauthorized" };
+    return;
+  }
+
+  const session = await prisma.session.findUnique({
+    where: {
+      sessionId,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  if (!session || !session.user) {
+    ctx.status = 401;
+    ctx.body = { error: "Unauthorized" };
+    return;
+  }
+
+  ctx.state.user = session.user;
+  await next();
+};

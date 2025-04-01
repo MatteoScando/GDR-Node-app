@@ -5,11 +5,12 @@ import { RaceAttrModSchema } from "../../prisma/validation/validationRaceAttrMod
 import { validationError } from "../utilities/errorsHandler";
 import { raceAttrModExsist } from "../middlewares/middlewareRaceAttrMod";
 import { ZodError } from "zod";
+import { authUser } from "../middlewares/middlewareAuth";
 
 const router = new Router();
 
 // GET /: retrive all races attribute mode
-router.get("/race/attr/mod", async (ctx) => {
+router.get("/race/attr/mod", authUser, async (ctx) => {
   try {
     const raceAttrMod = await prisma.raceAttrMod.findMany();
     ctx.status = 201;
@@ -20,9 +21,8 @@ router.get("/race/attr/mod", async (ctx) => {
   }
 });
 
-router.get("/race/:idRace/attr/:idAttribute", async (ctx) => {
-    
-  try {   
+router.get("/race/:idRace/attr/:idAttribute", authUser, async (ctx) => {
+  try {
     ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
     const data = ctx.request.body as RaceAttrMod;
 
@@ -36,11 +36,11 @@ router.get("/race/:idRace/attr/:idAttribute", async (ctx) => {
     }
 
     const raceAttrMod = await prisma.raceAttrMod.findUnique({
-      where : {
+      where: {
         idRace_idAttribute: {
           idRace: idRace,
           idAttribute: idAttribute,
-        }
+        },
       },
     });
 
@@ -51,7 +51,6 @@ router.get("/race/:idRace/attr/:idAttribute", async (ctx) => {
 
     ctx.status = 200;
     ctx.body = raceAttrMod;
-  
   } catch (error) {
     ctx.status = 500;
     if (error instanceof ZodError) {
@@ -60,11 +59,10 @@ router.get("/race/:idRace/attr/:idAttribute", async (ctx) => {
       ctx.body = "Generic Error: " + error;
     }
   }
-
-})
+});
 
 // POST /: create a raceAttrMod
-router.post("/race/:idRace/attr/:idAttribute", async (ctx) => {
+router.post("/race/:idRace/attr/:idAttribute", authUser, async (ctx) => {
   try {
     ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
     const data = ctx.request.body as RaceAttrMod;
@@ -109,93 +107,103 @@ router.post("/race/:idRace/attr/:idAttribute", async (ctx) => {
 });
 
 // PATCH /: update a raceAttrMod
-router.patch("/race/:idRace/attr/:idAttribute", raceAttrModExsist, async (ctx) => {
-  try {
-    ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
-    const data = ctx.request.body as RaceAttrMod;
-
-    const idRace = ctx.params.idRace;
-    const idAttribute = ctx.params.idAttribute;
-
-    if (!idRace || !idAttribute) {
-      ctx.status = 400;
-      ctx.body = "Error: idRace and idAttribute are required";
-      return;
-    }
-
+router.patch(
+  "/race/:idRace/attr/:idAttribute",
+  authUser,
+  raceAttrModExsist,
+  async (ctx) => {
     try {
-      const raceAttrMod = await prisma.raceAttrMod.update({
-        where: {
-          idRace_idAttribute: {
-            idRace: idRace,
-            idAttribute: idAttribute,
-          }
-        },
-        data: {
-          value: data.value,
-        },
-      });
+      ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
+      const data = ctx.request.body as RaceAttrMod;
 
-      ctx.status = 200;
-      ctx.body =
-        "Race Attribute Relation updated: " +
-        "idRace: " +
-        raceAttrMod.idRace +
-        "idAttribute: " +
-        raceAttrMod.idAttribute;
+      const idRace = ctx.params.idRace;
+      const idAttribute = ctx.params.idAttribute;
+
+      if (!idRace || !idAttribute) {
+        ctx.status = 400;
+        ctx.body = "Error: idRace and idAttribute are required";
+        return;
+      }
+
+      try {
+        const raceAttrMod = await prisma.raceAttrMod.update({
+          where: {
+            idRace_idAttribute: {
+              idRace: idRace,
+              idAttribute: idAttribute,
+            },
+          },
+          data: {
+            value: data.value,
+          },
+        });
+
+        ctx.status = 200;
+        ctx.body =
+          "Race Attribute Relation updated: " +
+          "idRace: " +
+          raceAttrMod.idRace +
+          "idAttribute: " +
+          raceAttrMod.idAttribute;
+      } catch (error) {
+        ctx.status = 500;
+        ctx.body = "Error: " + error;
+      }
     } catch (error) {
       ctx.status = 500;
-      ctx.body = "Error: " + error;
-    }
-  } catch (error) {
-    ctx.status = 500;
-    if (error instanceof ZodError) {
-      ctx.body = validationError(error);
-    } else {
-      ctx.body = "Generic Error: " + error;
+      if (error instanceof ZodError) {
+        ctx.body = validationError(error);
+      } else {
+        ctx.body = "Generic Error: " + error;
+      }
     }
   }
-})
+);
 
 // DELETE /: delete a raceAttrMod
-router.delete("/race/:idRace/attr/:idAttribute", raceAttrModExsist, async (ctx) => {
-  try {
-    ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
-    const data = ctx.request.body as RaceAttrMod;
-
-    const idRace = ctx.params.idRace;
-    const idAttribute = ctx.params.idAttribute;
-
-    if (!idRace || !idAttribute) {
-      ctx.status = 400;
-      ctx.body = "Error: idRace and idAttribute are required";
-      return;
-    }
-
+router.delete(
+  "/race/:idRace/attr/:idAttribute",
+  authUser,
+  raceAttrModExsist,
+  async (ctx) => {
     try {
-      const raceAttrMod = await prisma.raceAttrMod.delete({
-        where: {
-          idRace_idAttribute: {
-            idRace: idRace,
-            idAttribute: idAttribute,
-          }
-        }
-      });
+      ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
+      const data = ctx.request.body as RaceAttrMod;
 
-      ctx.status = 200;
-      ctx.body = "Race Attribute Relation deleted correctly"
+      const idRace = ctx.params.idRace;
+      const idAttribute = ctx.params.idAttribute;
+
+      if (!idRace || !idAttribute) {
+        ctx.status = 400;
+        ctx.body = "Error: idRace and idAttribute are required";
+        return;
+      }
+
+      try {
+        const raceAttrMod = await prisma.raceAttrMod.delete({
+          where: {
+            idRace_idAttribute: {
+              idRace: idRace,
+              idAttribute: idAttribute,
+            },
+          },
+        });
+
+        ctx.status = 200;
+        ctx.body = "Race Attribute Relation deleted correctly";
+      } catch (error) {
+        ctx.status = 500;
+        ctx.body = "Error: " + error;
+      }
     } catch (error) {
       ctx.status = 500;
-      ctx.body = "Error: " + error;
-    }
-  } catch (error) {
-    ctx.status = 500;
-    if (error instanceof ZodError) {
-      ctx.body = validationError(error);
-    } else {
-      ctx.body = "Generic Error: " + error;
+      if (error instanceof ZodError) {
+        ctx.body = validationError(error);
+      } else {
+        ctx.body = "Generic Error: " + error;
+      }
     }
   }
-});
+);
 
 export default router;

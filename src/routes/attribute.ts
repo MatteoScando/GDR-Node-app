@@ -5,13 +5,14 @@ import { attributeSchema } from "../../prisma/validation/validationAttribute";
 import { validationError } from "../utilities/errorsHandler";
 import { attributeExists } from "../middlewares/middlewareAttribute";
 import { ZodError } from "zod";
+import { authUser } from "../middlewares/middlewareAuth";
 
 const router = new Router({
   prefix: "/attribute",
 });
 
 // GET /: retrive all attribute
-router.get("/", async (ctx) => {
+router.get("/", authUser, async (ctx) => {
   try {
     const attribute = await prisma.attribute.findMany();
     ctx.status = 201;
@@ -23,7 +24,7 @@ router.get("/", async (ctx) => {
 });
 
 // POST /: create a attribute
-router.post("/", async (ctx) => {
+router.post("/", authUser, async (ctx) => {
   try {
     ctx.request.body = attributeSchema.parse(ctx.request.body);
     const data = ctx.request.body as Attribute;
@@ -54,7 +55,7 @@ router.post("/", async (ctx) => {
 });
 
 // GET /:id: get single attribute
-router.get("/:id", async (ctx) => {
+router.get("/:id", authUser, async (ctx) => {
   const id = ctx.params.id;
 
   try {
@@ -79,7 +80,7 @@ router.get("/:id", async (ctx) => {
 });
 
 // PATCH /:id: update single attribute
-router.patch("/:id", attributeExists, async (ctx) => {
+router.patch("/:id", authUser, attributeExists, async (ctx) => {
   const id = ctx.params.id;
   const data = ctx.request.body as Attribute;
 
@@ -104,7 +105,7 @@ router.patch("/:id", attributeExists, async (ctx) => {
 });
 
 // DELETE /:id: delete single character
-router.delete("/:id", attributeExists, async (ctx) => {
+router.delete("/:id", authUser, attributeExists, async (ctx) => {
   const id = ctx.params.id;
 
   try {

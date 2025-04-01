@@ -5,13 +5,14 @@ import { skillExists } from "../middlewares/middlewareSkill";
 import { skillSchema } from "../../prisma/validation/validationSkill";
 import { validationError } from "../utilities/errorsHandler";
 import { ZodError } from "zod";
+import { authUser } from "../middlewares/middlewareAuth";
 
 const router = new Router({
   prefix: "/skill",
 });
 
 // GET /: retrieve all skills
-router.get("/", async (ctx) => {
+router.get("/", authUser, async (ctx) => {
   try {
     const skills = await prisma.skill.findMany();
     ctx.status = 200;
@@ -23,7 +24,7 @@ router.get("/", async (ctx) => {
 });
 
 // POST /: create a skill
-router.post("/", async (ctx) => {
+router.post("/", authUser, async (ctx) => {
   try {
     ctx.request.body = skillSchema.parse(ctx.request.body);
     const data = ctx.request.body as Skill;
@@ -55,7 +56,7 @@ router.post("/", async (ctx) => {
 });
 
 // GET /:id: get single skill
-router.get("/:id", async (ctx) => {
+router.get("/:id", authUser, async (ctx) => {
   const id = ctx.params.id;
 
   try {
@@ -80,7 +81,7 @@ router.get("/:id", async (ctx) => {
 });
 
 // PATCH /:id: update single skill
-router.patch("/:id", skillExists, async (ctx) => {
+router.patch("/:id", authUser, skillExists, async (ctx) => {
   const id = ctx.params.id;
   const data = ctx.request.body as Skill;
 
@@ -106,7 +107,7 @@ router.patch("/:id", skillExists, async (ctx) => {
 });
 
 // DELETE /:id: delete single skill
-router.delete("/:id", skillExists, async (ctx) => {
+router.delete("/:id", authUser, skillExists, async (ctx) => {
   const id = ctx.params.id;
 
   try {
