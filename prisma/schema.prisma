@@ -17,8 +17,10 @@ model Character {
   mana    Int?    @default(100)
   idRace  String
   idClass String
+  userId  String?
   race    Race    @relation(fields: [idRace], references: [id], onDelete: Cascade)
   class   Class   @relation(fields: [idClass], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Race {
@@ -71,11 +73,30 @@ model ClassSkillMod {
 }
 
 model Skill {
-  id            String          @id @default(uuid())
-  name          String          @db.VarChar(20)
-  key           String          @db.VarChar(20)
-  value         Int?            @default(10)
+  id            String      @id @default(uuid())
+  name          String      @db.VarChar(20)
+  key           String      @db.VarChar(20)
+  value         Int?        @default(10)
   idAttribute   String
-  attribute     Attribute       @relation(fields: [idAttribute], references: [id], onDelete: Cascade)
+  attribute     Attribute   @relation(fields: [idAttribute], references: [id], onDelete: Cascade)
   classSkillMod ClassSkillMod[]
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  character Character[]
+  session Session[]
+}
+
+model Session {
+  id            String  @id @default(uuid())
+  sessionId     String  @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String
+  user          User    @relation(fields: [userId], references: [id])
 }
