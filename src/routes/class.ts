@@ -4,6 +4,7 @@ import { Class } from "@prisma/client";
 import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { classSchema } from "../../prisma/validation/validationClass";
+import { classExists } from "../middlewares/middlewareClass";
 
 const router = new Router({
   prefix: "/class",
@@ -49,6 +50,75 @@ router.post("/", async (ctx) => {
     } else {
       ctx.body = "Generic Error: " + error;
     }
+  }
+});
+
+// GET /:id: get single class
+router.get("/:id", async (ctx) => {
+  const id = ctx.params.id;
+
+  try {
+    const clazz = await prisma.class.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!clazz) {
+      ctx.status = 404;
+      ctx.body = "Class not found";
+      return;
+    } else {
+      ctx.status = 201;
+      ctx.body = clazz;
+    }
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = "Error: " + error;
+  }
+});
+
+// PATCH /:id: update single class
+router.patch("/:id", classExists, async (ctx) => {
+  const id = ctx.params.id;
+  const data = ctx.request.body as Class;
+
+  try {
+    const clazz = await prisma.class.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: data.name,
+        key: data.key,
+        description: data.description,
+      },
+    });
+
+    ctx.status = 201;
+    ctx.body = "Class updated: " + clazz.id;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = "Error: " + error;
+  }
+});
+
+// DELETE /:id: delete single class
+router.delete("/:id", classExists, async (ctx) => {
+  const id = ctx.params.id;
+
+  try {
+    const clazz = await prisma.class.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    ctx.status = 200;
+    ctx.body = "Class deleted: " + clazz.id;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = "Error: " + error;
   }
 });
 

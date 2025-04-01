@@ -106,6 +106,7 @@ router.patch("/:id", raceExists, async (ctx) => {
     ctx.body = "Error: " + error;
   }
 });
+
 // DELETE /:id: delete single race
 router.delete("/:id", raceExists, async (ctx) => {
   const id = ctx.params.id;

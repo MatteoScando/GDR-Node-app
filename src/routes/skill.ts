@@ -34,6 +34,7 @@ router.post("/", async (ctx) => {
           name: data.name,
           key: data.key,
           value: data.value,
+          idAttribute: data.idAttribute,
         },
       });
 
@@ -92,6 +93,7 @@ router.patch("/:id", skillExists, async (ctx) => {
         name: data.name,
         key: data.key,
         value: data.value,
+        idAttribute: data.idAttribute,
       },
     });
 

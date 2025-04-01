@@ -47,6 +47,7 @@ model Attribute {
   key         String        @db.VarChar(20)
   name        String        @db.VarChar(20)
   value       Int?          @default(20)
+  skill       Skill[]
   raceAttrMod RaceAttrMod[]
 }
 
@@ -70,10 +71,11 @@ model ClassSkillMod {
 }
 
 model Skill {
-  id    String @id @default(uuid())
-  name  String @db.VarChar(20)
-  key   String @db.VarChar(20)
-  value Int?   @default(10)
-
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(20)
+  key           String          @db.VarChar(20)
+  value         Int?            @default(10)
+  idAttribute   String
+  attribute     Attribute       @relation(fields: [idAttribute], references: [id], onDelete: Cascade)
   classSkillMod ClassSkillMod[]
 }

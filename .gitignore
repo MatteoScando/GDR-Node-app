@@ -1,5 +1,11 @@
 node_modules
+
 .vscode
+
 prisma/migrations
+
 package-lock.json
+
 todo.md
+
+.idea
