@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { COOKIE_SESSION_NAME } from "../consts";
 import { authUser } from "../middlewares/middlewareAuth";
+import { userSchema } from "../../prisma/validation/validationUser";
 
 const router = new Router({
   prefix: "/user",
@@ -12,6 +13,7 @@ const router = new Router({
 
 // POST: /user/register: create a new user
 router.post("/register", async (ctx) => {
+  ctx.request.body = userSchema.parse(ctx.request.body);
   const { email, password } = ctx.request.body as User;
 
   try {

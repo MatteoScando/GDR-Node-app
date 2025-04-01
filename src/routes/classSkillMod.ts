@@ -1,32 +1,86 @@
 import Router from "@koa/router";
 import prisma from "../../prisma/client";
-import { ClassSkillMod } from "@prisma/client";
+import { ClassSkillMod, USER_ROLE } from "@prisma/client";
 import { classSkillModSchema } from "../../prisma/validation/validationClassSkillMod";
 import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { classSkillModExists } from "../middlewares/middlewareClassSkillMod";
-import { authUser } from "../middlewares/middlewareAuth";
+import { authUser, userRole } from "../middlewares/middlewareAuth";
 
 const router = new Router();
 
 // GET /: retrive all class/skill mods
-router.get("/class/skill/mod", authUser, async (ctx) => {
-  try {
-    const data = await prisma.classSkillMod.findMany();
-    ctx.status = 201;
-    ctx.body = data;
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = "Error: " + error;
+router.get(
+  "/class/skill/mod",
+  authUser,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
+  async (ctx) => {
+    try {
+      const data = await prisma.classSkillMod.findMany();
+      ctx.status = 201;
+      ctx.body = data;
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = "Error: " + error;
+    }
   }
-});
+);
 
 // POST /class/:idClass/skill/:idSkill: create a modificator for class/skill
-router.post("/class/:idClass/skill/:idSkill", authUser, async (ctx) => {
-  try {
-    ctx.request.body = classSkillModSchema.parse(ctx.request.body);
-    const data = ctx.request.body as ClassSkillMod;
+router.post(
+  "/class/:idClass/skill/:idSkill",
+  authUser,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
+  async (ctx) => {
+    try {
+      ctx.request.body = classSkillModSchema.parse(ctx.request.body);
+      const data = ctx.request.body as ClassSkillMod;
 
+      const idClass = ctx.params.idClass;
+      const idSkill = ctx.params.idSkill;
+
+      if (!idClass || !idSkill) {
+        ctx.status = 400;
+        ctx.body = "Error: idClass and idSkill are required";
+        return;
+      }
+
+      try {
+        const classSkillPivot = await prisma.classSkillMod.create({
+          data: {
+            idSkill: idSkill,
+            idClass: idClass,
+            value: data.value,
+          },
+        });
+
+        ctx.status = 201;
+        ctx.body =
+          "Pivot table of Class and Skill created: Class -> " +
+          classSkillPivot.idClass +
+          " Skill -> " +
+          classSkillPivot.idSkill;
+      } catch (error) {
+        ctx.status = 500;
+        ctx.body = "Error: " + error;
+      }
+    } catch (error) {
+      ctx.status = 500;
+      if (error instanceof ZodError) {
+        ctx.body = validationError(error);
+      } else {
+        ctx.body = "Generic Error: " + error;
+      }
+    }
+  }
+);
+
+// GET /class/:idClass/skill/:idSkill: return a single class/skill mods
+router.get(
+  "/class/:idClass/skill/:idSkill",
+  authUser,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
+  async (ctx) => {
     const idClass = ctx.params.idClass;
     const idSkill = ctx.params.idSkill;
 
@@ -37,74 +91,36 @@ router.post("/class/:idClass/skill/:idSkill", authUser, async (ctx) => {
     }
 
     try {
-      const classSkillPivot = await prisma.classSkillMod.create({
-        data: {
-          idSkill: idSkill,
-          idClass: idClass,
-          value: data.value,
+      const data = await prisma.classSkillMod.findUnique({
+        where: {
+          idSkill_idClass: {
+            idClass: idClass,
+            idSkill: idSkill,
+          },
         },
       });
 
-      ctx.status = 201;
-      ctx.body =
-        "Pivot table of Class and Skill created: " +
-        "Class -> " +
-        classSkillPivot.idClass +
-        " Skill -> " +
-        classSkillPivot.idSkill;
+      if (!data) {
+        ctx.status = 404;
+        ctx.body = "not found";
+        return;
+        
+      } else {
+        ctx.status = 201;
+        ctx.body = data;
+      }
     } catch (error) {
       ctx.status = 500;
       ctx.body = "Error: " + error;
     }
-  } catch (error) {
-    ctx.status = 500;
-    if (error instanceof ZodError) {
-      ctx.body = validationError(error);
-    } else {
-      ctx.body = "Generic Error: " + error;
-    }
   }
-});
-
-// GET /class/:idClass/skill/:idSkill: return a single class/skill mods
-router.get("/class/:idClass/skill/:idSkill", authUser, async (ctx) => {
-  const idClass = ctx.params.idClass;
-  const idSkill = ctx.params.idSkill;
-
-  if (!idClass || !idSkill) {
-    ctx.status = 400;
-    ctx.body = "Error: idClass and idSkill are required";
-    return;
-  }
-
-  try {
-    const data = await prisma.classSkillMod.findUnique({
-      where: {
-        idSkill_idClass: {
-          idClass: idClass,
-          idSkill: idSkill,
-        },
-      },
-    });
-
-    if (!data) {
-      ctx.status = 404;
-      ctx.body = "not found";
-      return;
-    } else {
-      ctx.status = 201;
-      ctx.body = data;
-    }
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = "Error: " + error;
-  }
-});
+);
 
 // PATCH /:id: update single class/skill mod
 router.patch(
   "/class/:idClass/skill/:idSkill",
   authUser,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   classSkillModExists,
   async (ctx) => {
     const idClass = ctx.params.idClass;
@@ -143,6 +159,7 @@ router.patch(
 router.delete(
   "/class/:idClass/skill/:idSkill",
   authUser,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   classSkillModExists,
   async (ctx) => {
     const idClass = ctx.params.idClass;
