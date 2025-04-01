@@ -3,8 +3,8 @@ import prisma from "../../prisma/client";
 import { Skill } from "@prisma/client";
 import { skillExists } from "../middlewares/middlewareSkill";
 import { skillSchema } from "../../prisma/validation/validationSkill";
-import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
+import { ZodError } from "zod";
 
 const router = new Router({
   prefix: "/skill",

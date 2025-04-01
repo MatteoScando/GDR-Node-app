@@ -91,7 +91,7 @@ router.patch("/:id", attributeExists, async (ctx) => {
       data: {
         name: data.name,
         key: data.key,
-        value: data.value
+        value: data.value,
       },
     });
 
