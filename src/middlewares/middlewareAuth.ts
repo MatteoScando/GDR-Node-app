@@ -45,11 +45,15 @@ export const userRole = async (
     return;
   }
 
-  if (user.role !== role) {
-    ctx.status = 403;
-    ctx.body = { error: "Forbidden" };
-    return;
-  }
+  if (user.role === USER_ROLE.ADMIN) {
+    await next();
+  } else {
+    if (user.role !== role) {
+      ctx.status = 403;
+      ctx.body = { error: "Forbidden" };
+      return;
+    }
 
-  await next();
+    await next();
+  }
 };
