@@ -1,6 +1,5 @@
 import { Context, Next } from "koa";
 import prisma from "../../prisma/client";
-import { classSkillModSchema } from "../../prisma/validation/validationClassSkillMod";
 
 export const classSkillModExists = async (ctx: Context, next: Next) => {
     const idClass = ctx.params.idClass;

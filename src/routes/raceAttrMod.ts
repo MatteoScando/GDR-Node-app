@@ -33,7 +33,6 @@ router.get(
   async (ctx) => {
     try {
       ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
-      const data = ctx.request.body as RaceAttrMod;
 
       const idRace = ctx.params.idRace;
       const idAttribute = ctx.params.idAttribute;
@@ -185,7 +184,6 @@ router.delete(
   async (ctx) => {
     try {
       ctx.request.body = RaceAttrModSchema.parse(ctx.request.body);
-      const data = ctx.request.body as RaceAttrMod;
 
       const idRace = ctx.params.idRace;
       const idAttribute = ctx.params.idAttribute;
@@ -207,7 +205,7 @@ router.delete(
         });
 
         ctx.status = 200;
-        ctx.body = "Race Attribute Relation deleted correctly";
+        ctx.body = "Race Attribute Relation deleted correctly: " +raceAttrMod.idRace +" "+raceAttrMod.idAttribute;
       } catch (error) {
         ctx.status = 500;
         ctx.body = "Error: " + error;
