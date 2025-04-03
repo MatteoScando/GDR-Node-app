@@ -1,0 +1,331 @@
+openapi: 3.0.0
+info:
+  title: Documentazione GDR Node
+  version: 1.0.0
+  description: API Documentation of our gdr
+paths:
+  /class/skill/mod:
+    get:
+      summary: Retrieve all class/skill mods
+      description: Returns a list of all class/skill modifications
+      tags:
+        - Class Skill Modifications
+      responses:
+        "201":
+          description: Class/skill mods retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ClassSkillMod"
+                  message:
+                    type: string
+                    example: Class/skill mods retrieved successfully
+        "401":
+          description: Unauthorized - User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - User does not have admin role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  "/class/{idClass}/skill/{idSkill}":
+    post:
+      summary: Create a new class/skill modification
+      description: Creates a new modification value for a specific class and skill
+        combination
+      tags:
+        - Class Skill Modifications
+      parameters:
+        - in: path
+          name: idClass
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the class
+        - in: path
+          name: idSkill
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClassSkillModInput"
+      responses:
+        "201":
+          description: Class/skill mod created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Class/skill mod created successfully
+                  data:
+                    $ref: "#/components/schemas/ClassSkillMod"
+        "400":
+          description: Bad request - Missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - User does not have admin role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Retrieve a single class/skill modification
+      description: Returns a specific class/skill modification by class ID and skill ID
+      tags:
+        - Class Skill Modifications
+      parameters:
+        - in: path
+          name: idClass
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the class
+        - in: path
+          name: idSkill
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the skill
+      responses:
+        "201":
+          description: Class/skill mod retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassSkillMod"
+        "400":
+          description: Bad request - Missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - User does not have admin role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found - Class/skill modification not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      summary: Update a class/skill modification
+      description: Updates the value of a specific class/skill modification
+      tags:
+        - Class Skill Modifications
+      parameters:
+        - in: path
+          name: idClass
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the class
+        - in: path
+          name: idSkill
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClassSkillModInput"
+      responses:
+        "201":
+          description: Class/skill modification updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Class/skill modification updated successfully
+                  data:
+                    $ref: "#/components/schemas/ClassSkillMod"
+        "400":
+          description: Bad request - Missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - User does not have admin role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found - Class/skill modification not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a class/skill modification
+      description: Deletes a specific class/skill modification by class ID and skill ID
+      tags:
+        - Class Skill Modifications
+      parameters:
+        - in: path
+          name: idClass
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the class
+        - in: path
+          name: idSkill
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the skill
+      responses:
+        "201":
+          description: Class/skill modification deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Class/skill modification deleted successfully
+                  data:
+                    $ref: "#/components/schemas/ClassSkillMod"
+        "401":
+          description: Unauthorized - User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden - User does not have admin role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found - Class/skill modification not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+    ClassSkillMod:
+      type: object
+      properties:
+        idSkill:
+          type: string
+          format: uuid
+        idClass:
+          type: string
+          format: uuid
+        value:
+          type: integer
+    ClassSkillModInput:
+      type: object
+      properties:
+        value:
+          type: integer
+      required:
+        - value
+tags: []

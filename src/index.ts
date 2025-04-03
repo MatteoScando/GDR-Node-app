@@ -1,6 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import dotenv from "dotenv";
+
 import characterRoutes from "./routes/character";
 import attributeRoutes from "./routes/attribute";
 import raceAttrModRoutes from "./routes/raceAttrMod";
@@ -12,17 +13,21 @@ import userRouter from "./routes/user";
 import meRouter from "./routes/me";
 import classSkillModRoutes from "./routes/classSkillMod";
 
+import { swaggerRoute, swaggerUI } from "./generateSpec"
+
 dotenv.config();
 
 const app = new Koa();
 const router = new Router();
 
 app.use(bodyParser());
+app.use(swaggerUI);
 
 router.get("/", (ctx) => {
     ctx.response.body = "GDR Node";
 });
 
+app.use(swaggerRoute.routes()).use(swaggerRoute.allowedMethods());
 app.use(characterRoutes.routes()).use(characterRoutes.allowedMethods());
 app.use(attributeRoutes.routes()).use(attributeRoutes.allowedMethods());
 app.use(classSkillModRoutes.routes()).use(classSkillModRoutes.allowedMethods());

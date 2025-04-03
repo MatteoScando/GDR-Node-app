@@ -16,7 +16,8 @@
     "dev:docker:down": "docker-compose -f docker-compose.yml down -v",
     "lint": "eslint ./src",
     "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx tsx watch src/index.ts",
-    "test": "docker-compose -f docker-compose.yml up --build && npx prisma migrate dev --name latest"
+    "test": "docker-compose -f docker-compose.yml up --build && npx prisma migrate dev --name latest",
+    "swagger:generate": "npx tsx src/generateSpec.ts"
   },
   "dependencies": {
     "@koa/router": "^13.1.0",
@@ -25,8 +26,10 @@
     "dotenv": "^16.4.7",
     "koa": "^2.16.0",
     "koa-bodyparser": "^4.4.1",
+    "koa2-swagger-ui": "^5.11.0",
     "pg": "^8.14.1",
     "prisma": "^6.5.0",
+    "swagger-jsdoc": "^6.2.8",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -36,6 +39,7 @@
     "@types/koa-bodyparser": "^4.3.12",
     "@types/node": "^22.13.13",
     "@types/pg": "^8.11.11",
+    "@types/swagger-jsdoc": "^6.0.4",
     "eslint": "^9.23.0",
     "globals": "^16.0.0",
     "nodemon": "^3.1.9",
