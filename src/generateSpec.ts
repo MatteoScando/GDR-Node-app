@@ -37,4 +37,4 @@ export const swaggerUI = koaSwagger({
     }
 });
 
-console.log("Specs Generated");
+console.log("Specs Generated!");

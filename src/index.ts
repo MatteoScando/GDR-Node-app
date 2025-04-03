@@ -1,6 +1,7 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import dotenv from "dotenv";
+import bodyParser from "koa-bodyparser";
 
 import characterRoutes from "./routes/character";
 import attributeRoutes from "./routes/attribute";
@@ -8,7 +9,6 @@ import raceAttrModRoutes from "./routes/raceAttrMod";
 import classRoutes from "./routes/class";
 import skillRoutes from "./routes/skill";
 import raceRoute from "./routes/race";
-import bodyParser from "koa-bodyparser";
 import userRouter from "./routes/user";
 import meRouter from "./routes/me";
 import classSkillModRoutes from "./routes/classSkillMod";
