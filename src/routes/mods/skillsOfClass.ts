@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import prisma from "../../../prisma/client";
-import { USER_ROLE } from "@prisma/client";
+import { ClassSkillMod, USER_ROLE } from "@prisma/client";
 import { authUser, userRole } from "../../middlewares/middlewareAuth";
 
 const router = new Router({
@@ -16,7 +16,7 @@ router.get(
     const id = ctx.params.id;
 
     try {
-      const clazz = await prisma.classSkillMod.findMany({
+      const skills: ClassSkillMod[] = await prisma.classSkillMod.findMany({
         where: {
           idClass: id,
         },
@@ -25,13 +25,13 @@ router.get(
         }
       });
 
-      if (!clazz) {
+      if (!skills) {
         ctx.status = 404;
         ctx.body = { error: "class not found"};
         return;
       } else {
         ctx.status = 201;
-        ctx.body = clazz;
+        ctx.body = skills;
       }
     } catch (error) {
       ctx.status = 500;

@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import prisma from "../../../prisma/client";
-import { USER_ROLE } from "@prisma/client";
+import { RaceAttrMod, USER_ROLE } from "@prisma/client";
 import { authUser, userRole } from "../../middlewares/middlewareAuth";
 
 const router = new Router({
@@ -16,7 +16,7 @@ router.get(
     const id = ctx.params.id;
 
     try {
-      const race = await prisma.raceAttrMod.findMany({
+      const attributes: RaceAttrMod[] = await prisma.raceAttrMod.findMany({
         where: {
           idRace: id,
         },
@@ -25,13 +25,13 @@ router.get(
         },
       });
 
-      if (!race) {
+      if (!attributes) {
         ctx.status = 404;
         ctx.body = { error: "Race not found"};
         return;
       } else {
         ctx.status = 201;
-        ctx.body = race;
+        ctx.body = attributes;
       }
     } catch (error) {
       ctx.status = 500;

@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import prisma from "../../../prisma/client";
-import { USER_ROLE } from "@prisma/client";
+import { Attribute, Skill, USER_ROLE } from "@prisma/client";
 import { authUser, userRole } from "../../middlewares/middlewareAuth";
 
 const router = new Router({
@@ -14,13 +14,13 @@ router.get(
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
     try {
-      const attribute = await prisma.attribute.findMany({
+      const attributes: Attribute[] = await prisma.attribute.findMany({
         include:{
           skill: true,
         },
       });
       ctx.status = 201;
-      ctx.body = attribute;
+      ctx.body = attributes;
     } catch (error) {
       ctx.status = 500;
       ctx.body = {error: "Unable to retrive attributes"};
