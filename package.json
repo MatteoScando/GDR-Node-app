@@ -5,9 +5,9 @@
   "license": "LGPL-2.1-only",
   "type": "module",
   "scripts": {
-    "prisma:generate": "npx prisma generate",
     "prisma:migrate:dev": "npx prisma migrate dev --name latest",
-    "prisma:dev": "npm run prisma:generate && npm run prisma:migrate:dev --name latest",
+    "prisma:generate": "npx prisma generate",
+    "prisma:dev": "npm run prisma:migrate:dev --name latest && npm run prisma:generate",
     "prisma:populate": "cat ./prisma/export/db.sql | docker exec -i corso_its_db psql -U corso_its_db -d corso_its_db",
     "prisma:docker:migrate": "docker compose -f 'docker-compose.yml' up -d --build 'corso_its_db' && npm run prisma:generate && npm run prisma:migrate:dev --name latest && docker-compose -f docker-compose.yml down -v",
     "db": "npx prisma studio",
