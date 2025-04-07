@@ -504,6 +504,67 @@ router.delete(
 );
 
 // GET /class/:idClass/skill: get single class with relative skills
+/**
+ * @swagger
+ * /class/{idClass}/skill:
+ *   get:
+ *     summary: Retrieve skills for a specific class
+ *     description: Returns all skills associated with a specific class and their modification values
+ *     tags:
+ *       - Class Skill Modifications
+ *     parameters:
+ *       - in: path
+ *         name: idClass
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the class
+ *     responses:
+ *       201:
+ *         description: Class skills retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   idSkill:
+ *                     type: string
+ *                     format: uuid
+ *                   idClass:
+ *                     type: string
+ *                     format: uuid
+ *                   value:
+ *                     type: integer
+ *                   skill:
+ *                     $ref: '#/components/schemas/Skill'
+ *       401:
+ *         description: Unauthorized - User not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Forbidden - User does not have admin role
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Not found - Class not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get(
   "/class/:idClass/skill",
   authUser,
