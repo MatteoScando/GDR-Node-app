@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { classSkillModExists } from "../middlewares/middlewareClassSkillMod";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
+import { classExists } from "../middlewares/middlewareClass";
 
 const router = new Router();
 
@@ -506,6 +507,7 @@ router.delete(
 router.get(
   "/class/:idClass/skill",
   authUser,
+  classExists,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
     const idClass = ctx.params.idClass;

@@ -6,6 +6,7 @@ import { validationError } from "../utilities/errorsHandler";
 import { raceAttrModExsist } from "../middlewares/middlewareRaceAttrMod";
 import { ZodError } from "zod";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
+import { raceExists } from "../middlewares/middlewareRace";
 
 const router = new Router();
 
@@ -225,6 +226,7 @@ router.delete(
 router.get(
   "/race/:idRace/attr",
   authUser,
+  raceExists,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
     const idRace = ctx.params.idRace;
