@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { createTheme, MantineProvider } from "@mantine/core";
+import { Box, Container, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "./globals.css";
-import Header from "@/components/header";
+import customTheme from "@/theme";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,12 +14,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const theme = createTheme({});
-
   return (
     <html lang="en">
       <body className="antialiased">
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={customTheme}>
+          <Container>
+            <Box>{children}</Box>
+          </Container>
+        </MantineProvider>
       </body>
     </html>
   );

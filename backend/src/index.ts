@@ -14,6 +14,7 @@ import meRouter from "./routes/me";
 import apiClient from "./routes/client";
 import classSkillModRoutes from "./routes/classSkillMod";
 import { swaggerRoute, swaggerUI } from "./doc/swagger";
+import cors from "@koa/cors";
 
 dotenv.config();
 
@@ -24,6 +25,13 @@ app.use(bodyParser());
 router.get("/", (ctx) => {
     ctx.response.body = "GDR Node";
 });
+
+app.use(
+  cors({
+    origin: "http://localhost:3001", // consenti solo il frontend React/Next
+    credentials: true, // se usi cookie o Authorization header
+  })
+);
 
 app.use(swaggerRoute.routes()).use(swaggerRoute.allowedMethods());
 app.use(characterRoutes.routes()).use(characterRoutes.allowedMethods());
