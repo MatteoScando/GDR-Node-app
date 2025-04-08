@@ -2,6 +2,7 @@ import { Context, Next } from "koa";
 import { COOKIE_SESSION_NAME } from "../consts";
 import prisma from "../../prisma/client";
 import { USER_ROLE } from "@prisma/client";
+import { authJWT } from "./middlewareJWT";
 
 // Middleware to check if the user is authenticated
 export const authUser = async (ctx: Context, next: Next) => {

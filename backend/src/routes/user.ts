@@ -6,13 +6,14 @@ import crypto from "crypto";
 import { COOKIE_SESSION_NAME } from "../consts";
 import { authUser } from "../middlewares/middlewareAuth";
 import { userSchema } from "../../prisma/validation/validationUser";
+import { authJWT } from "../middlewares/middlewareJWT";
 
 const router = new Router({
   prefix: "/user",
 });
 
 // POST: /user/register: create a new user
-router.post("/register", async (ctx) => {
+router.post("/register", authJWT, async (ctx) => {
   ctx.request.body = userSchema.parse(ctx.request.body);
   const { email, password } = ctx.request.body as User;
 
@@ -40,7 +41,7 @@ router.post("/register", async (ctx) => {
 });
 
 // POST: /user/login: login a user
-router.post("/login", async (ctx) => {
+router.post("/login", authJWT, async (ctx) => {
   const { email, password } = ctx.request.body as User;
 
   try {
@@ -87,7 +88,7 @@ router.post("/login", async (ctx) => {
 });
 
 // POST: /user/logout: logout a user
-router.post("/logout", authUser, async (ctx) => {
+router.post("/logout", authJWT, authUser, async (ctx) => {
   const sessionId = ctx.cookies.get(COOKIE_SESSION_NAME);
 
   if (!sessionId) {

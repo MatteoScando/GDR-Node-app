@@ -7,6 +7,7 @@ import { validationError } from "../utilities/errorsHandler";
 import { classSkillModExists } from "../middlewares/middlewareClassSkillMod";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
 import { classExists } from "../middlewares/middlewareClass";
+import { authJWT } from "../middlewares/middlewareJWT";
 
 const router = new Router();
 
@@ -55,19 +56,17 @@ const router = new Router();
  */
 router.get(
   "/class/skill/mod",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
     try {
       const data = await prisma.classSkillMod.findMany();
       ctx.status = 201;
-      ctx.body =  { 
-        data: data,
-        message: "Class/skill mods retrieved successfully",
-       };
+      ctx.body = data;
     } catch (error) {
       ctx.status = 500;
-      ctx.body = { error: "Unable to retrieve class/skill mods" };
+      ctx.body = "Error: " + error;
     }
   }
 );
@@ -148,6 +147,7 @@ router.get(
  */
 router.post(
   "/class/:idClass/skill/:idSkill",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -160,7 +160,7 @@ router.post(
 
       if (!idClass || !idSkill) {
         ctx.status = 400;
-        ctx.body = { error: "idClass and idSkill are required" };
+        ctx.body = "Error: idClass and idSkill are required";
         return;
       }
 
@@ -174,20 +174,21 @@ router.post(
         });
 
         ctx.status = 201;
-        ctx.body = {
-          message: "Class/skill mod created successfully",
-          data: classSkillPivot,
-        };
+        ctx.body =
+          "Pivot table of Class and Skill created: Class -> " +
+          classSkillPivot.idClass +
+          " Skill -> " +
+          classSkillPivot.idSkill;
       } catch (error) {
         ctx.status = 500;
-        ctx.body = { error: "Unable to create class/skill mod"};
+        ctx.body = "Error: " + error;
       }
     } catch (error) {
       ctx.status = 500;
       if (error instanceof ZodError) {
-        ctx.body = { error: validationError(error)};
+        ctx.body = validationError(error);
       } else {
-        ctx.body = { error: "Unable to create class/skill mod" };
+        ctx.body = "Generic Error: " + error;
       }
     }
   }
@@ -257,6 +258,7 @@ router.post(
  */
 router.get(
   "/class/:idClass/skill/:idSkill",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -265,7 +267,7 @@ router.get(
 
     if (!idClass || !idSkill) {
       ctx.status = 400;
-      ctx.body = { error: "idClass and idSkill are required" };
+      ctx.body = "Error: idClass and idSkill are required";
       return;
     }
 
@@ -281,16 +283,15 @@ router.get(
 
       if (!data) {
         ctx.status = 404;
-        ctx.body = { error: "not found" };
+        ctx.body = "not found";
         return;
-        
       } else {
         ctx.status = 201;
         ctx.body = data;
       }
-    } catch (err) {
+    } catch (error) {
       ctx.status = 500;
-      ctx.body = {error: "Unable to retrieve class/skill modification data"};
+      ctx.body = "Error: " + error;
     }
   }
 );
@@ -375,8 +376,10 @@ router.get(
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
+
 router.patch(
   "/class/:idClass/skill/:idSkill",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   classSkillModExists,
@@ -399,13 +402,16 @@ router.patch(
       });
 
       ctx.status = 201;
-      ctx.body = { 
-        message : "Class/skill modification updated successfully", 
-        data: classSkillMod
-      }
+      ctx.body =
+        "Pivot table of Class and Skill modified: Class -> " +
+        classSkillMod.idClass +
+        " Skill -> " +
+        classSkillMod.idSkill +
+        " with value: -> " +
+        classSkillMod.value;
     } catch (error) {
       ctx.status = 500;
-      ctx.body = { error: "Unable to update class/skill modification" };
+      ctx.body = "Error: " + error;
     }
   }
 );
@@ -474,6 +480,7 @@ router.patch(
  */
 router.delete(
   "/class/:idClass/skill/:idSkill",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   classSkillModExists,
@@ -491,14 +498,15 @@ router.delete(
         },
       });
 
-      ctx.status = 201;
-      ctx.body = { 
-        message: "Class/skill modification deleted successfully", 
-        data: classSkillMod
-      };
+      ctx.status = 200;
+      ctx.body =
+        "Pivot table of Class and Skill deleted: Class -> " +
+        classSkillMod.idClass +
+        " Skill -> " +
+        classSkillMod.idSkill;
     } catch (error) {
       ctx.status = 500;
-      ctx.body = { error: "Unable to delete class/skill modification" };
+      ctx.body = "Error: " + error;
     }
   }
 );
@@ -567,6 +575,7 @@ router.delete(
  */
 router.get(
   "/class/:idClass/skill",
+  authJWT,
   authUser,
   classExists,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
@@ -604,13 +613,10 @@ export default router;
  * @swagger
  *  components:
  *  schemas:
- *  
+ *
  *    Error:
- *      type: object
- *      properties:
- *        error:
- *          type: string
- * 
+ *      type: string
+ *
  *    ClassSkillMod:
  *      type: object
  *      properties:
@@ -622,7 +628,7 @@ export default router;
  *          format: uuid
  *        value:
  *          type: integer
- * 
+ *
  *    ClassSkillModInput:
  *      type: object
  *      properties:

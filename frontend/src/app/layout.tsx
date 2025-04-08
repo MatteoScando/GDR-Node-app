@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { createTheme, MantineProvider } from "@mantine/core";
-import '@mantine/core/styles.css';
+import "@mantine/core/styles.css";
 import "./globals.css";
+import Header from "@/components/header";
 
 export const metadata: Metadata = {
   title: "Create Next App",

@@ -4,6 +4,207 @@ info:
   version: 1.0.0
   description: API Documentation of our gdr
 paths:
+  /attribute:
+    get:
+      summary: Recupera tutti gli attributi
+      tags:
+        - Attribute
+      responses:
+        "200":
+          description: Lista degli attributi recuperata con successo
+        "500":
+          description: Errore del server
+    post:
+      summary: Crea un nuovo attributo
+      tags:
+        - Attribute
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                key:
+                  type: string
+                value:
+                  type: string
+      responses:
+        "201":
+          description: Attributo creato con successo
+        "400":
+          description: Errore di validazione
+        "500":
+          description: Errore del server
+  "/attribute/{id}":
+    get:
+      summary: Recupera un attributo singolo
+      tags:
+        - Attribute
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Attributo recuperato con successo
+        "404":
+          description: Attributo non trovato
+        "500":
+          description: Errore del server
+    put:
+      summary: Aggiorna un attributo esistente
+      tags:
+        - Attribute
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID dell'attributo da aggiornare
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                key:
+                  type: string
+                value:
+                  type: string
+      responses:
+        "200":
+          description: Attributo aggiornato con successo
+        "404":
+          description: Attributo non trovato
+        "500":
+          description: Errore interno del server
+    delete:
+      summary: Elimina un attributo
+      tags:
+        - Attribute
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID dell'attributo da eliminare
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Attributo eliminato con successo
+        "404":
+          description: Attributo non trovato
+        "500":
+          description: Errore interno del server
+  /class:
+    get:
+      summary: Ottieni tutte le classi
+      tags:
+        - Classes
+      responses:
+        "200":
+          description: Lista di tutte le classi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Class"
+        "500":
+          description: Errore interno del server
+    post:
+      summary: Crea una nuova classe
+      tags:
+        - Classes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClassInput"
+      responses:
+        "201":
+          description: Classe creata con successo
+        "400":
+          description: Dati non validi
+        "500":
+          description: Errore interno del server
+  "/class/{id}":
+    get:
+      summary: Ottieni una classe per ID
+      tags:
+        - Classes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID della classe
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Dettagli della classe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+        "404":
+          description: Classe non trovata
+        "500":
+          description: Errore interno del server
+    patch:
+      summary: Aggiorna una classe esistente
+      tags:
+        - Classes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID della classe da aggiornare
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Class"
+      responses:
+        "200":
+          description: Classe aggiornata con successo
+        "400":
+          description: Dati non validi
+        "404":
+          description: Classe non trovata
+        "500":
+          description: Errore interno del server
+    delete:
+      summary: Elimina una classe
+      tags:
+        - Classes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID della classe da eliminare
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Classe eliminata con successo
+        "404":
+          description: Classe non trovata
+        "500":
+          description: Errore interno del server
   /class/skill/mod:
     get:
       summary: Retrieve all class/skill mods
@@ -362,13 +563,334 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /race/attr/mod:
+    get:
+      summary: Get all Race Attribute Modifiers
+      description: Retrieves a list of all Race Attribute Modifiers from the database.
+      tags:
+        - raceAttrMod
+      responses:
+        "200":
+          description: A list of Race Attribute Modifiers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RaceAttrMod"
+        "500":
+          description: Internal server error
+  "/race/{idRace}/attr/{idAttribute}":
+    get:
+      summary: Get a specific Race Attribute Modifier
+      description: Retrieves a single Race Attribute Modifier based on Race and
+        Attribute IDs.
+      tags:
+        - raceAttrMod
+      parameters:
+        - in: path
+          name: idRace
+          required: true
+          schema:
+            type: string
+          description: The ID of the race
+        - in: path
+          name: idAttribute
+          required: true
+          schema:
+            type: string
+          description: The ID of the attribute
+      responses:
+        "200":
+          description: The requested Race Attribute Modifier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RaceAttrMod"
+        "400":
+          description: Bad request, missing parameters
+        "401":
+          description: Unauthorized operation
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: Race Attribute Modifier not found
+        "500":
+          description: Internal server error
+    post:
+      summary: Create a new Race Attribute Modifier
+      description: Creates a new modifier linking a race to an attribute with a given value.
+      tags:
+        - raceAttrMod
+      parameters:
+        - in: path
+          name: idRace
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idAttribute
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+                  description: The modifier value
+      responses:
+        "201":
+          description: Race Attribute Modifier created successfully
+        "400":
+          description: Bad request, missing parameters
+        "401":
+          description: Unauthorized operation
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Internal server error
+    patch:
+      summary: Update a Race Attribute Modifier
+      description: Updates the value of an existing Race Attribute Modifier.
+      tags:
+        - raceAttrMod
+      parameters:
+        - in: path
+          name: idRace
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idAttribute
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+                  description: The updated modifier value
+      responses:
+        "200":
+          description: Race Attribute Modifier updated successfully
+        "400":
+          description: Bad request, missing parameters
+        "401":
+          description: Unauthorized operation
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Internal server error
+    delete:
+      summary: Delete a Race Attribute Modifier
+      description: Deletes an existing Race Attribute Modifier based on Race and
+        Attribute IDs.
+      tags:
+        - raceAttrMod
+      parameters:
+        - in: path
+          name: idRace
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idAttribute
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Race Attribute Modifier deleted successfully
+        "400":
+          description: Bad request, missing parameters
+        "401":
+          description: Unauthorized operation
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Internal server error
+  /skill:
+    get:
+      summary: Retrieve all skills
+      tags:
+        - Skill
+      responses:
+        "200":
+          description: A list of skills.
+        "500":
+          description: Internal server error.
+    post:
+      summary: Create a new skill
+      tags:
+        - Skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                key:
+                  type: string
+                value:
+                  type: integer
+                idAttribute:
+                  type: string
+      responses:
+        "201":
+          description: Skill created.
+        "500":
+          description: Internal server error.
+  "/skill/{id}":
+    get:
+      summary: Get a single skill
+      tags:
+        - Skill
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Skill found.
+        "404":
+          description: Skill not found.
+        "500":
+          description: Internal server error.
+    patch:
+      summary: Update a skill
+      tags:
+        - Skill
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                key:
+                  type: string
+                value:
+                  type: integer
+                idAttribute:
+                  type: string
+      responses:
+        "200":
+          description: Skill updated.
+        "500":
+          description: Internal server error.
+    delete:
+      summary: Delete a skill
+      tags:
+        - Skill
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Skill deleted.
+        "500":
+          description: Internal server error.
 components:
   schemas:
-    Error:
+    Attribute:
       type: object
       properties:
-        error:
+        id:
           type: string
+          format: uuid
+          description: ID univoco dell'attributo
+        name:
+          type: string
+          description: Nome dell'attributo
+        key:
+          type: string
+          description: Chiave univoca dell'attributo
+        value:
+          type: string
+          description: Valore dell'attributo
+        createdAt:
+          type: string
+          format: date-time
+          description: Data di creazione dell'attributo
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data di ultima modifica dell'attributo
+    Class:
+      type: object
+      required:
+        - name
+        - key
+        - description
+      properties:
+        id:
+          type: string
+          description: L'ID univoco della classe
+        name:
+          type: string
+          description: Il nome della classe
+        key:
+          type: string
+          description: La chiave univoca della classe
+        description:
+          type: string
+          description: Descrizione della classe
+        createdAt:
+          type: string
+          format: date-time
+          description: La data di creazione della classe
+        updatedAt:
+          type: string
+          format: date-time
+          description: La data dell'ultimo aggiornamento della classe
+    ClassInput:
+      type: object
+      required:
+        - name
+        - key
+        - description
+      properties:
+        name:
+          type: string
+          description: Il nome della classe
+        key:
+          type: string
+          description: La chiave univoca della classe
+        description:
+          type: string
+          description: Descrizione della classe
+        createdAt:
+          type: string
+          format: date-time
+          description: La data di creazione della classe
+        updatedAt:
+          type: string
+          format: date-time
+          description: La data dell'ultimo aggiornamento della classe
+    Error:
+      type: string
     ClassSkillMod:
       type: object
       properties:
@@ -387,4 +909,42 @@ components:
           type: integer
       required:
         - value
-tags: []
+    RaceAttrMod:
+      type: object
+      properties:
+        idRace:
+          type: string
+          format: uuid
+          description: The ID of the race
+        idAttribute:
+          type: string
+          format: uuid
+          description: The ID of the attribute
+        value:
+          type: integer
+          description: The modifier value for the attribute
+      required:
+        - idRace
+        - idAttribute
+        - value
+    securitySchemes:
+      cookieAuth:
+        type: apiKey
+        in: cookie
+        name: sessionId
+    responses:
+      UnauthorizedError:
+        description: Access token is missing or invalid
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Unauthorized access
+tags:
+  - name: Attribute
+    description: API per la gestione degli attributi
+  - name: Classes
+    description: API per la gestione delle classi

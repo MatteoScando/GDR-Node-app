@@ -6,14 +6,35 @@ import { validationError } from "../utilities/errorsHandler";
 import { attributeExists } from "../middlewares/middlewareAttribute";
 import { ZodError } from "zod";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
+import { authJWT } from "../middlewares/middlewareJWT";
+
+/**
+ * @swagger
+ * tags:
+ *   name: Attribute
+ *   description: API per la gestione degli attributi
+ */
 
 const router = new Router({
   prefix: "/attribute",
 });
 
-// GET /: retrive all attribute
+/**
+ * @swagger
+ * /attribute:
+ *   get:
+ *     summary: Recupera tutti gli attributi
+ *     tags: [Attribute]
+ *     responses:
+ *       200:
+ *         description: Lista degli attributi recuperata con successo
+ *       500:
+ *         description: Errore del server
+ */
+
 router.get(
   "/",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -28,9 +49,38 @@ router.get(
   }
 );
 
+/**
+ * @swagger
+ * /attribute:
+ *   post:
+ *     summary: Crea un nuovo attributo
+ *     tags: [Attribute]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               key:
+ *                 type: string
+ *               value:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Attributo creato con successo
+ *       400:
+ *         description: Errore di validazione
+ *       500:
+ *         description: Errore del server
+ */
+
 // POST /: create a attribute
 router.post(
   "/",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -64,9 +114,31 @@ router.post(
   }
 );
 
+/**
+ * @swagger
+ * /attribute/{id}:
+ *   get:
+ *     summary: Recupera un attributo singolo
+ *     tags: [Attribute]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Attributo recuperato con successo
+ *       404:
+ *         description: Attributo non trovato
+ *       500:
+ *         description: Errore del server
+ */
+
 // GET /:id: get single attribute
 router.get(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -94,9 +166,45 @@ router.get(
   }
 );
 
+/**
+ * @swagger
+ * /attribute/{id}:
+ *   put:
+ *     summary: Aggiorna un attributo esistente
+ *     tags: [Attribute]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID dell'attributo da aggiornare
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               key:
+ *                 type: string
+ *               value:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Attributo aggiornato con successo
+ *       404:
+ *         description: Attributo non trovato
+ *       500:
+ *         description: Errore interno del server
+ */
+
 // PATCH /:id: update single attribute
 router.patch(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   attributeExists,
@@ -125,9 +233,32 @@ router.patch(
   }
 );
 
+/**
+ * @swagger
+ * /attribute/{id}:
+ *   delete:
+ *     summary: Elimina un attributo
+ *     tags: [Attribute]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID dell'attributo da eliminare
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Attributo eliminato con successo
+ *       404:
+ *         description: Attributo non trovato
+ *       500:
+ *         description: Errore interno del server
+ */
+
 // DELETE /:id: delete single character
 router.delete(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   attributeExists,
@@ -150,9 +281,40 @@ router.delete(
   }
 );
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Attribute:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: ID univoco dell'attributo
+ *         name:
+ *           type: string
+ *           description: Nome dell'attributo
+ *         key:
+ *           type: string
+ *           description: Chiave univoca dell'attributo
+ *         value:
+ *           type: string
+ *           description: Valore dell'attributo
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Data di creazione dell'attributo
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Data di ultima modifica dell'attributo
+ */
+
 // GET /attribute/:id/skill
 router.get(
   "/:id/skill",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {

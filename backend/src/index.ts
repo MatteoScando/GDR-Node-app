@@ -11,9 +11,9 @@ import skillRoutes from "./routes/skill";
 import raceRoute from "./routes/race";
 import userRouter from "./routes/user";
 import meRouter from "./routes/me";
+import apiClient from "./routes/client";
 import classSkillModRoutes from "./routes/classSkillMod";
-
-import { swaggerRoute, swaggerUI } from "./generateSpec"
+import { swaggerRoute, swaggerUI } from "./doc/swagger";
 
 dotenv.config();
 
@@ -21,8 +21,6 @@ const app = new Koa();
 const router = new Router();
 
 app.use(bodyParser());
-app.use(swaggerUI);
-
 router.get("/", (ctx) => {
     ctx.response.body = "GDR Node";
 });
@@ -35,10 +33,15 @@ app.use(raceAttrModRoutes.routes()).use(raceAttrModRoutes.allowedMethods());
 app.use(classRoutes.routes()).use(classRoutes.allowedMethods());
 app.use(skillRoutes.routes()).use(skillRoutes.allowedMethods());
 app.use(userRouter.routes()).use(userRouter.allowedMethods());
+app.use(apiClient.routes()).use(apiClient.allowedMethods());
 app.use(raceRoute.routes()).use(raceRoute.allowedMethods());
 app.use(meRouter.routes()).use(meRouter.allowedMethods());
 app.use(router.routes()).use(router.allowedMethods());
+app.use(swaggerUI);
 
 app.listen(process.env.APP_PORT || 3000, () => {
-  console.log(`HTTP Server running on http://localhost:${process.env.APP_PORT}`);
+  console.log(
+    `Server running --> http://localhost:${process.env.APP_PORT || 3000}\n` +
+      `Docs section --> http://localhost:${process.env.APP_PORT || 3000}/docs`
+  );
 });

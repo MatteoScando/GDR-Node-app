@@ -6,6 +6,7 @@ import { characterSchema } from "../../prisma/validation/validationCharacter";
 import { validationError } from "../utilities/errorsHandler";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
 import { ZodError } from "zod";
+import { authJWT } from "../middlewares/middlewareJWT";
 
 const router = new Router({
   prefix: "/character",
@@ -14,6 +15,7 @@ const router = new Router({
 // GET /: retrive all characters
 router.get(
   "/",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   async (ctx) => {
@@ -35,6 +37,7 @@ router.get(
 // POST /: create a character
 router.post(
   "/",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   async (ctx) => {
@@ -77,8 +80,9 @@ router.post(
 // GET /:id: get single character
 router.get(
   "/:id",
-  (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
+  authJWT,
   authUser,
+  (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   async (ctx) => {
     const id = ctx.params.id;
 
@@ -108,6 +112,7 @@ router.get(
 // PATCH /:id: update single character
 router.patch(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   characterExists,
@@ -143,6 +148,7 @@ router.patch(
 // DELETE /:id: delete single character
 router.delete(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.GUEST),
   characterExists,

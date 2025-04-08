@@ -1,16 +1,12 @@
-"use client";
-
 import { Button } from "@mantine/core";
 
 const Page = () => {
-  return(
-    <>
+  return (
+    <div>
       Game ITS
-      <Button>
-        pippo
-      </Button>
-    </>
+      <Button variant="light">Button</Button>
+    </div>
   );
-}
+};
 
 export default Page;

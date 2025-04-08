@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { validationError } from "../utilities/errorsHandler";
 import { raceExists } from "../middlewares/middlewareRace";
 import { authUser, userRole } from "../middlewares/middlewareAuth";
+import { authJWT } from "../middlewares/middlewareJWT";
 
 const router = new Router({
   prefix: "/race",
@@ -14,6 +15,7 @@ const router = new Router({
 // GET /: retrive all race
 router.get(
   "/",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -31,6 +33,7 @@ router.get(
 // POST /: create a race
 router.post(
   "/",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -69,6 +72,7 @@ router.post(
 // GET /:id: get single race
 router.get(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   async (ctx) => {
@@ -99,6 +103,7 @@ router.get(
 // PATCH /:id: update single race
 router.patch(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   raceExists,
@@ -132,6 +137,7 @@ router.patch(
 // DELETE /:id: delete single race
 router.delete(
   "/:id",
+  authJWT,
   authUser,
   (ctx, next) => userRole(ctx, next, USER_ROLE.ADMIN),
   raceExists,
