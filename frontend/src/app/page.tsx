@@ -1,14 +1,7 @@
-import { Button } from "@mantine/core";
+import HomePage from "@/components/pages/home";
 
 const Page = async () => {
-  const reponse = await fetch("http://localhost:3000/api/hello");
-
-  return (
-    <div>
-      Game ITS
-      <Button variant="light">Button</Button>
-    </div>
-  );
+  return <HomePage />;
 };
 
 export default Page;

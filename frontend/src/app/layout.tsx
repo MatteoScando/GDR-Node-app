@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Box, Container, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
-import "./globals.css";
+import "../assets/styles/globals.css";
 import customTheme from "@/theme";
 
 export const metadata: Metadata = {
@@ -18,8 +18,14 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <MantineProvider theme={customTheme}>
-          <Container>
-            <Box>{children}</Box>
+          <Container
+            bg={"violet.9"}
+            size="full"
+            px={0}
+            py={0}
+            style={{ minHeight: "100vh" }}
+          >
+            {children}
           </Container>
         </MantineProvider>
       </body>

@@ -1,21 +1,33 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
-export function middleware(request: NextRequest) {
-  // Controlla la presenza del cookie di sessione
-  const session = request.cookies.get("sessionId");
+const protectedRoutes = ["/"];
+const publicRoutes = ["/login"];
 
-  // Se l'utente non è autenticato e sta cercando di accedere a /character
-  if (!session) {
-    // Reindirizza alla homepage
-    return NextResponse.redirect(new URL("/login", request.url));
+export default async function middleware(req: NextRequest) {
+  // 1. Check if the current route is protected or public
+  const path = req.nextUrl.pathname;
+  const isProtectedRoute = protectedRoutes.includes(path);
+  const isPublicRoute = publicRoutes.includes(path);
+
+  // 2. Get the session from the cookie
+  const cookieStore = await cookies();
+  const session = cookieStore.get("sessionId")?.value;
+
+  // 3. Redirect to /login if the user is not authenticated
+  if (isProtectedRoute && !session) {
+    return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
-  // Continua con la richiesta originale
+  // 4. Redirect to /dashboard if the user is authenticated
+  if (session && isPublicRoute) {
+    return NextResponse.redirect(new URL("/", req.nextUrl));
+  }
+
   return NextResponse.next();
 }
 
-// Specifica le route su cui applicare il middleware
+// Routes Middleware should not run on
 export const config = {
-  matcher: "/",
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

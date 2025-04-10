@@ -41,7 +41,7 @@ router.post("/register", authJWT, async (ctx) => {
 });
 
 // POST: /user/login: login a user
-router.post("/login", authJWT, async (ctx) => {
+router.post("/login", async (ctx) => {
   const { email, password } = ctx.request.body as User;
 
   try {

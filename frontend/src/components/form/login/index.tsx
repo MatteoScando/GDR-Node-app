@@ -1,46 +1,101 @@
+"use client";
 import {
+  Alert,
   Anchor,
   Button,
   Checkbox,
-  Container,
   Group,
   Paper,
   PasswordInput,
-  Text,
   TextInput,
-  Title,
+  useMantineTheme,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { initialValues_Login } from "./const";
+import { LoginFormValues } from "./types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { errorsHandlers } from "@/app/lib/errorsHandlers";
 
-const LoginForm = async () => {
+const LoginForm = () => {
+  const [error, setError] = useState<number | null>(null);
+
+  const theme = useMantineTheme();
+  const router = useRouter();
+
+  const form = useForm({
+    initialValues: initialValues_Login,
+  });
+
+  const handleLogin = async (values: LoginFormValues) => {
+    const data = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
+    });
+
+    if (data.status === 200) {
+      const { redirect } = await data.json();
+      router.push(redirect);
+    } else {
+      setError(data.status);
+    }
+  };
+
   return (
-    <Container size={420} my={40}>
-      <Title ta="center">Welcome back!</Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Do not have an account yet?{" "}
-        <Anchor size="sm" component="button">
-          Create account
-        </Anchor>
-      </Text>
-
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <TextInput label="Email" placeholder="you@mantine.dev" required />
+    <Paper shadow="md" p={30} mt={30} radius="md" bg={"violet.8"}>
+      <form onSubmit={form.onSubmit((values) => handleLogin(values))}>
+        <TextInput
+          label="Email"
+          placeholder="you@mantine.dev"
+          {...form.getInputProps("email")}
+          styles={{
+            label: {
+              color: theme.colors.gray[4],
+            },
+          }}
+        />
         <PasswordInput
           label="Password"
           placeholder="Your password"
           required
           mt="md"
+          {...form.getInputProps("password")}
+          styles={{
+            label: {
+              color: theme.colors.gray[4],
+            },
+          }}
         />
         <Group justify="space-between" mt="lg">
-          <Checkbox label="Remember me" />
+          <Checkbox
+            label="Remember me"
+            {...form.getInputProps("remember")}
+            styles={{
+              label: {
+                color: theme.colors.gray[4],
+              },
+            }}
+          />
           <Anchor component="button" size="sm">
             Forgot password?
           </Anchor>
         </Group>
-        <Button fullWidth mt="xl">
+        <Button fullWidth mt="xl" type="submit">
           Sign in
         </Button>
-      </Paper>
-    </Container>
+        {error && (
+          <Alert mt={20} variant="light" color="red">
+            {errorsHandlers(error)}
+          </Alert>
+        )}
+      </form>
+    </Paper>
   );
 };
 
