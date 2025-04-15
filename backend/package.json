@@ -11,7 +11,7 @@
     "dev:docker": "docker-compose -f docker-compose.yml up",
     "dev:docker:build": "docker-compose -f docker-compose.yml up --build",
     "dev:docker:down": "docker-compose -f docker-compose.yml down -v",
-    "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx tsx watch src/index.ts",
+    "dev": "npm run prisma:migrate:dev && npm run prisma:generate && npx prisma db seed && npx tsx watch src/index.ts",
     "lint": "eslint ./src",
     "test": "docker-compose -f docker-compose.yml up --build && npx prisma migrate dev --name latest",
     "swagger:generate": "npx tsx src/swagger.ts"

@@ -13,7 +13,7 @@ const router = new Router({
 });
 
 // POST: /user/register: create a new user
-router.post("/register", async (ctx) => {
+router.post("/register", authJWT, async (ctx) => {
   ctx.request.body = userSchema.parse(ctx.request.body);
   const { email, password } = ctx.request.body as User;
 
@@ -41,7 +41,7 @@ router.post("/register", async (ctx) => {
 });
 
 // POST: /user/login: login a user
-router.post("/login", async (ctx) => {
+router.post("/login", authJWT, async (ctx) => {
   const { email, password } = ctx.request.body as User;
 
   try {

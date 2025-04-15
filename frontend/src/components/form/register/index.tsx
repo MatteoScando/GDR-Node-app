@@ -5,7 +5,7 @@ import { initialValues_Register } from "./consts";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { errorsHandlers } from "@/app/lib/errorsHandlers";
+import { errorsHandlers } from "@/lib/errorsHandlers";
 
 const RegistrationForm = () => {
   const [error, setError] = useState<number | null>(null);
