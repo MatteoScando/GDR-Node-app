@@ -1,17 +1,22 @@
 "use client";
-import { Alert, Button, Paper, PasswordInput, TextInput, useMantineTheme } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  Paper,
+  PasswordInput,
+  TextInput,
+  useMantineTheme,
+} from "@mantine/core";
 import { RegisterFormValues } from "./types";
 import { initialValues_Register } from "./consts";
 import { useForm } from "@mantine/form";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { errorsHandlers } from "@/lib/errorsHandlers";
 
 const RegistrationForm = () => {
-  const [error, setError] = useState<number | null>(null);
+  const [message, setMessage] = useState<number | null>(null);
 
   const theme = useMantineTheme();
-  const router = useRouter();
 
   const requirements = [
     { re: /.{8,}/, label: "Password need 8 characters" },
@@ -24,15 +29,17 @@ const RegistrationForm = () => {
   const form = useForm({
     initialValues: initialValues_Register,
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value.trim())) ? null : 'Invalid email address',
+      email: (value) =>
+        /^\S+@\S+$/.test(value.trim()) ? null : "Invalid email address",
       password: (value) => {
-        for(const requirement of requirements) {
+        for (const requirement of requirements) {
           if (!requirement.re.test(value)) {
             return requirement.label;
           }
-        };
+        }
       },
-      confirmPassword: (value, values) => value === values.password ? null : 'Passwords do not match',
+      confirmPassword: (value, values) =>
+        value === values.password ? null : "Passwords do not match",
     },
   });
 
@@ -48,12 +55,7 @@ const RegistrationForm = () => {
       }),
     });
 
-    if (data.status === 201) {
-      const { redirect } = await data.json();
-      router.push(redirect);
-    } else {
-      setError(data.status);
-    }
+    setMessage(data.status);
   };
 
   return (
@@ -101,9 +103,15 @@ const RegistrationForm = () => {
           Sign in
         </Button>
 
-        {error && (
-          <Alert mt={20} variant="light" color="red">
-            {errorsHandlers(error)}
+        {message && (
+          <Alert
+            mt={20}
+            variant="filled"
+            color={message === 201 ? "green" : "red"}
+          >
+            {message === 201
+              ? "User created succesfully!"
+              : errorsHandlers(message)}
           </Alert>
         )}
       </form>

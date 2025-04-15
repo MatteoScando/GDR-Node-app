@@ -82,7 +82,7 @@ const LoginForm = () => {
               },
             }}
           />
-          <Anchor component="button" size="sm">
+          <Anchor component="button" size="sm" underline="always" c="white">
             Forgot password?
           </Anchor>
         </Group>
@@ -90,7 +90,7 @@ const LoginForm = () => {
           Sign in
         </Button>
         {error && (
-          <Alert mt={20} variant="light" color="red">
+          <Alert mt={20} variant="filled" color="red">
             {errorsHandlers(error)}
           </Alert>
         )}
