@@ -7,6 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ApiClient {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(20)
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Character {
   id      String  @id @default(uuid())
   name    String  @db.VarChar(20)
@@ -19,6 +27,8 @@ model Character {
   idClass String
   race    Race    @relation(fields: [idRace], references: [id], onDelete: Cascade)
   class   Class   @relation(fields: [idClass], references: [id], onDelete: Cascade)
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
 }
 
 model Race {
@@ -33,9 +43,9 @@ model Race {
 }
 
 model RaceAttrMod {
-  race        Race      @relation(fields: [idRace], references: [id])
+  race        Race      @relation(fields: [idRace], references: [id], onDelete: Cascade)
+  attribute   Attribute @relation(fields: [idAttribute], references: [id], onDelete: Cascade)
   idRace      String
-  attribute   Attribute @relation(fields: [idAttribute], references: [id])
   idAttribute String
   value       Int
 
@@ -61,9 +71,9 @@ model Class {
 }
 
 model ClassSkillMod {
-  skill   Skill  @relation(fields: [idSkill], references: [id])
+  skill   Skill  @relation(fields: [idSkill], references: [id], onDelete: Cascade)
+  class   Class  @relation(fields: [idClass], references: [id], onDelete: Cascade)
   idSkill String
-  class   Class  @relation(fields: [idClass], references: [id])
   idClass String
   value   Int
 
@@ -78,4 +88,29 @@ model Skill {
   idAttribute   String
   attribute     Attribute       @relation(fields: [idAttribute], references: [id], onDelete: Cascade)
   classSkillMod ClassSkillMod[]
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  password   String
+  role       USER_ROLE   @default(GUEST)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  characters Character[]
+  session    Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  sessionId String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum USER_ROLE {
+  ADMIN
+  GUEST
 }
